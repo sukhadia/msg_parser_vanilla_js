@@ -107,14 +107,15 @@ const parse = (data, rules) => {
     console.log("recordsOfInterest: ", recordsOfInterest);
     recordsOfInterest.forEach((recordMsg) => {
       rules.typesOfRecords.forEach((rule) => {
-        const outputObj = {
-          time: recordMsg.id.split("time: ")[1].split(",")[0].trim()
-        };
+        let outputObj = null;
         const keys = Object.keys(recordMsg.msg);
 
         console.log("keys", keys);
         keys.forEach((key) => {
           if (rule.fieldsOfInterest.includes(key)) {
+            outputObj = {
+              time: recordMsg.id.split("time: ")[1].split(",")[0].trim()
+            };
             const label = rule.label || rule.fieldsOfInterest[0];
             const fieldObj = outputObj[label] || {};
             outputObj[label] = fieldObj;
@@ -129,7 +130,7 @@ const parse = (data, rules) => {
     });
   });
 
-  return output;
+  return output.filter((obj) => !!obj);
 };
 
 console.log(parse(data, rules));
